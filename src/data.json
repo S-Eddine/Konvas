@@ -1,0 +1,89 @@
+{
+    "title": "01 Magasin",
+    "id": 1,
+    "parent":null,
+    "children": [
+    {
+        "title":"B1 Espace de vente",
+        "id": 1,
+        "children":[
+        {
+            "title":"C1 Epicerie salée",
+            "id": 1,
+            "children":[
+                {
+                    "title":"DD - Pâtes",
+                    "id": 0,
+                    "children":[        {
+                        "title":"EE - Element",
+                        "id": 1,
+                        "children":[
+                            {
+                                "title":"FF - Tablette",
+                                "id": 1,
+                                "children":[
+                                    {
+                                        "title":"GG - Famille produits",
+                                        "id": 1,
+                                        "children":[
+                                            {
+                                                "title":"Produit 1",
+                                                "id": 1
+                                            },
+                                            {
+                                                "title":"Produit 2",
+                                                "id": 2
+                                            },
+                                            {
+                                                "title":"Produit 3",
+                                                "id": 3
+                                            },
+                                            {
+                                                "title":"Produit 4",
+                                                "id": 4
+                                            },
+                                            {
+                                                "title":"Produit 5",
+                                                "id": 5
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }]
+                },
+                {
+                    "title":"AA - Céréales",
+                    "id": 1
+                },
+                {
+                    "title":"AA - Conserves",
+                    "id": 2
+                },
+                {
+                    "title":"AA - Plats cuisinée",
+                    "id": 3
+                },
+                {
+                    "title":"AA - Sauces",
+                    "id": 4
+                },
+                {
+                    "title":"AA - Soupes",
+                    "id": 5
+                }
+            ]
+        },
+        {
+            "title":"AA - Epicierie sucrée",
+            "id": 2
+        },
+        {
+            "title":"AA - Boulangerie",
+            "id": 3
+        }
+        ]
+    }
+    ]
+}

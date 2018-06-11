@@ -1,138 +1,102 @@
-import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { Stage, Layer, Rect, Text , Group, Label} from 'react-konva';
+import React, { Component } from 'react';
+import data from './data.json'
+import SortableTree, { addNodeUnderParent, removeNodeAtPath } from 'react-sortable-tree';
+import './index.css'
+import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
-class Block extends React.Component {
-  rectRef = React.createRef();
 
-  handleDragEnd = () => {
-    const rect = this.rectRef.current;
-    this.props.onBlockMove(rect.x(), rect.y());
-  }
-  handleClick = () => {
-    console.log("[TO DO] : handleClick");
-  }
-  handleDoubleClick = () => {
-    console.log("[TO DO] : handleDoubleClick");
-  }
-  render() {
-    const { x, y, width, height, rotationDeg, color} = this.props;
-    let newCoordinates  = calculateAngle(rotationDeg, height, width, x, y);
-    return (
-      <Group 
-        draggable
-        onDragEnd={this.handleDragEnd} >
-        <Rect
-          ref={this.rectRef}
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          fill={color}
-          shadowBlur={3}
-          rotation={rotationDeg}
-          onClick={this.handleClick}
-          onDblClick={this.handleDoubleClick} />
-        <Label
-            x={newCoordinates.x}
-            y={newCoordinates.y}
-            rotation={newCoordinates.rotationDeg}
-            rotation={rotationDeg-90}
-            width={width}
-            height={height}
-            opacity={1} >    
-          <Text
-            text= "Simple text"
-            fontSize={15}
-            fontFamily= "Calibri"
-            fill="Black" />
-        </Label>
-      </Group>
-    );
-  }
-}
 
-function calculateAngle(rotationDeg, h, w, x, y){
-  var newCoordinates = {};
-  switch (rotationDeg) {
-    case 0: 
-      if(h >= 2*w){
-        newCoordinates.rotationDeg = -90;
-        newCoordinates.x = x+(w/2.7);
-        newCoordinates.y = y+(h-h/2.5);
-      }else {
-        newCoordinates.rotationDeg = 0;
-        newCoordinates.x = x+(w/2.7);
-        newCoordinates.y = y+(h-h/2);
-      }
-      break;
-    case 90:
-      newCoordinates.rotationDeg = 0;
-      newCoordinates.x = x - h/1.5;
-      newCoordinates.y = y + w/2.2;
-      break;
-    case -90:
-      newCoordinates.rotationDeg = 0;
-      newCoordinates.x = x + h/2.5;
-      newCoordinates.y = y - w/1.5;
-      break;
-    case 45:
-      newCoordinates.x=x - h/2.3;
-      newCoordinates.y=y + h/2;
-      newCoordinates.rotationDeg = -rotationDeg; 
-      break;
-    case -45:
-      newCoordinates.x=x+w;
-      newCoordinates.y=y;
-      newCoordinates.rotationDeg = -rotationDeg; 
-    break;
-    default:
-    break;
-  }
-  return newCoordinates;
-}
 
-class Blocks extends React.Component {
-  state = {
-    coordinate: [
-        {x: 20, y: 20, color:'#2980B9', width:80,  height:400, rotationDeg:0},
-        {x:20,  y:670,  color:'#EBDEF0', width:50, height:300, rotationDeg:90},
-        {x:600, y:20,   color:'#1ABC9C', width:60, height:300, rotationDeg:90},
-        {x:600, y:200,  color:'#1ABC9C', width:50, height:400, rotationDeg:45},
-        {x:600, y:400,  color:'#1ABC9C', width:50, height:240, rotationDeg:-45},
-      ] 
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      treeData: [data],
+      activatedNode: null,
+      activatedNodePathLength: null
+    };
+  }
+
+  canDrop = (event) => {
+    return event.prevPath.length === event.nextPath.length;
+  }
+
+  handleAddClick = (node, path) => () => {
+    this.setState(state => ({
+      treeData: addNodeUnderParent({
+        treeData: state.treeData,
+        parentKey: path[path.length - 1],
+        expandParent: true,
+        getNodeKey: ({ treeIndex }) => treeIndex,
+        newNode: {
+          title: 'XX - Default',
+        },
+      }).treeData,
+    }))
+  }
+
+  handleRemoveClick = (node, path) => () => {
+    this.setState(state => ({
+      treeData: removeNodeAtPath({
+        treeData: state.treeData,
+        path,
+        getNodeKey: ({ treeIndex }) => treeIndex,
+      }),
+    }))
+  }
+
+  onMouseOver = (nodeId, activatedNodePathLength) => (event) => {
+    this.setState({activatedNode: nodeId, activatedNodePathLength: activatedNodePathLength});
+  }
+
+  onMouseOut = () => (event) => {
+    this.setState({activatedNode: null, activatedNodePathLength: null});
+  }
+
+  onClick = () => (event) => {
+    console.log("salah")
+  }
+
+  generateNodeProps_ = (event) => {
+    const addButton = <div className="tree-button" onClick={this.handleAddClick(event.node, event.path)} >
+                        <i className="fas fa-plus"></i>
+                      </div>;
+    const removeButton =  <div className="tree-button" onClick={this.handleRemoveClick(event.node, event.path)} >
+                            <i className="fas fa-trash"></i>
+                          </div>;
+    const buttons = [addButton];
+
+    if(event.parentNode) {
+      buttons.push(removeButton);
+    }
+
+    return {
+      className: `hide ${(event.node.id === this.state.activatedNode  &&
+                    event.path.length === this.state.activatedNodePathLength) ? "active" : ""}`,
+      onMouseOver: this.onMouseOver(event.node.id, event.path.length),
+      onMouseOut: this.onMouseOut(event.node.id, event.path.length),
+      onClick: this.onClick(event.node.id),
+      buttons: buttons,
+    }
+    
   };
 
-  handleBlockMove = (i) => (x, y) => {
-    const coor = this.state.coordinate;
-    coor[i] = {x ,y, color:coor[i].color , width:coor[i].width,  height:coor[i].height, rotationDeg:coor[i].rotationDeg};
-    this.setState({coordinate:coor});
-  }
-
   render() {
-    const { coordinate } = this.state;
     return (
-      <Stage width={window.innerWidth*2} height={window.innerHeight*2}>
-        <Layer>
-          { coordinate.map(
-              (coor, i) => 
-              <Block key={i} x={coor.x} y={coor.y} color={coor.color} width={coor.width} height={coor.height} 
-                        rotationDeg={coor.rotationDeg} onBlockMove={this.handleBlockMove(i)}/>
-                )
-          }
-        </Layer>
-      </Stage>
+      <div>
+        <div style={{height: 900, width:400,  overflow: 'auto' }}>
+          <SortableTree
+            treeData={this.state.treeData}
+            onChange={treeData => this.setState({ treeData })}
+            canDrop={this.canDrop}
+            generateNodeProps={this.generateNodeProps_}
+            theme={FileExplorerTheme}
+          />
+        </div>
+      </div>
     );
   }
 }
-
-class App extends Component {
-  render() {
-    return (
-      <Blocks />
-    );
-  }
-}
-
 
 render(<App />, document.getElementById('root'));
