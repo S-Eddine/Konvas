@@ -65,7 +65,6 @@ export default class App extends Component {
   };
 
   handleClick = () => (event) => {
-    console.log("salah")
   };
 
   generateNodeProps_ = (event) => {
@@ -80,9 +79,9 @@ export default class App extends Component {
     if(event.parentNode) {
       buttons.push(removeButton);
     }
-
+    
     return {
-      className: `hide ${(event.node.id === this.state.activatedNode  &&
+      className: `hide ${(event.node.id === this.state.activatedNodeId  &&
                     event.path.length === this.state.activatedNodePathLength) ? "active" : ""}`,
       onMouseOver: this.handleMouseOver(event.node.id, event.path.length),
       onMouseOut: this.handleMouseOut(event.node.id, event.path.length),
