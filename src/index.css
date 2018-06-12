@@ -22,3 +22,13 @@
   background-color: rgb(241, 241, 241);
 }
 
+.rstcustom__rowSearchMatch {
+  box-shadow: none;
+  color: #d4617e;
+
+}
+
+.rstcustom__rowSearchFocus {
+  box-shadow: none;
+  color: rgb(119, 161, 218);
+}

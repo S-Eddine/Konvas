@@ -4,6 +4,7 @@ import data from './data.json'
 import SortableTree, { addNodeUnderParent, removeNodeAtPath } from 'react-sortable-tree';
 import './index.css'
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
+import SearchBox from './../src/Components/searchBox'
 
 
 
@@ -14,13 +15,22 @@ export default class App extends Component {
     this.state = {
       treeData: [data],
       activatedNode: null,
-      activatedNodePathLength: null
-    };
+      activatedNodePathLength: null,
+      searchString: '',
+      searchFocusIndex: 0,
+      searchFoundCount: null
+    }
   }
+
+  /* TREE FUNCTIONS -- START -- */
 
   canDrop = (event) => {
     return event.prevPath.length === event.nextPath.length;
   }
+
+  handleDataChange = (treeData) => {
+    this.setState({ treeData });
+  };
 
   handleAddClick = (node, path) => () => {
     this.setState(state => ({
@@ -30,7 +40,7 @@ export default class App extends Component {
         expandParent: true,
         getNodeKey: ({ treeIndex }) => treeIndex,
         newNode: {
-          title: 'XX - Default',
+          title: 'AA - Default',
         },
       }).treeData,
     }))
@@ -44,19 +54,19 @@ export default class App extends Component {
         getNodeKey: ({ treeIndex }) => treeIndex,
       }),
     }))
-  }
+  };
 
-  onMouseOver = (nodeId, activatedNodePathLength) => (event) => {
-    this.setState({activatedNode: nodeId, activatedNodePathLength: activatedNodePathLength});
-  }
+  handleMouseOver = (activatedNodeId, activatedNodePathLength) => (event) => {
+    this.setState({activatedNodeId, activatedNodePathLength});
+  };
 
-  onMouseOut = () => (event) => {
+  handleMouseOut = () => (event) => {
     this.setState({activatedNode: null, activatedNodePathLength: null});
-  }
+  };
 
-  onClick = () => (event) => {
+  handleClick = () => (event) => {
     console.log("salah")
-  }
+  };
 
   generateNodeProps_ = (event) => {
     const addButton = <div className="tree-button" onClick={this.handleAddClick(event.node, event.path)} >
@@ -74,24 +84,89 @@ export default class App extends Component {
     return {
       className: `hide ${(event.node.id === this.state.activatedNode  &&
                     event.path.length === this.state.activatedNodePathLength) ? "active" : ""}`,
-      onMouseOver: this.onMouseOver(event.node.id, event.path.length),
-      onMouseOut: this.onMouseOut(event.node.id, event.path.length),
-      onClick: this.onClick(event.node.id),
+      onMouseOver: this.handleMouseOver(event.node.id, event.path.length),
+      onMouseOut: this.handleMouseOut(event.node.id, event.path.length),
+      onClick: this.handleClick(event.node.id),
       buttons: buttons,
     }
-    
   };
 
+    /* SEARCH FUNCTIONS -- START -- */
+
+  customSearchMethod = ({ node, searchQuery }) => {
+    return searchQuery &&
+    node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+  }
+
+
+  handleChangeInputSearch = (event) =>  {
+    return this.setState({ searchString: event.target.value })
+  };
+
+  searchFinishCallback = (matches) => {
+    const { searchFocusIndex } = this.state;
+    return this.setState({
+      searchFoundCount: matches.length,
+      searchFocusIndex:
+        matches.length > 0 ? searchFocusIndex % matches.length : 0,
+    })
+  };
+  selectPrevMatch = () => {
+    const { searchFocusIndex, searchFoundCount } = this.state;
+    this.setState({
+        searchFocusIndex:
+        searchFocusIndex !== null
+            ? (searchFoundCount + searchFocusIndex - 1) % searchFoundCount
+            : searchFoundCount - 1,
+    });   
+  }
+
+  selectNextMatch = () => {
+      const { searchFocusIndex, searchFoundCount } = this.state;
+      this.setState({
+          searchFocusIndex:
+          searchFocusIndex !== null
+              ? (searchFocusIndex + 1) % searchFoundCount
+              : 0,
+      });
+  }
+
+  searchFinishCallBack = (matches) => {
+      const { searchFocusIndex } = this.state;
+      this.setState({
+          searchFoundCount: matches.length,
+          searchFocusIndex:
+            matches.length > 0 ? searchFocusIndex % matches.length : 0,
+        })
+  }
+
+
   render() {
+    const { searchString, searchFocusIndex, searchFoundCount } = this.state;
+
     return (
       <div>
         <div style={{height: 900, width:400,  overflow: 'auto' }}>
+
+        <SearchBox 
+          onChangeInputSearch={this.handleChangeInputSearch} 
+          selectPrevMatch={this.selectPrevMatch} 
+          selectNextMatch={this.selectNextMatch}
+          searchFocusIndex={searchFocusIndex}
+          searchFoundCount={searchFoundCount}
+          searchString={searchString}
+        />
+
           <SortableTree
             treeData={this.state.treeData}
-            onChange={treeData => this.setState({ treeData })}
+            onChange={this.handleDataChange}
             canDrop={this.canDrop}
             generateNodeProps={this.generateNodeProps_}
             theme={FileExplorerTheme}
+            searchMethod={this.customSearchMethod}
+            searchQuery={searchString}
+            searchFocusOffset={searchFocusIndex}
+            searchFinishCallback={this.searchFinishCallback}
           />
         </div>
       </div>
