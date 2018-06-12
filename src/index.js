@@ -145,17 +145,15 @@ export default class App extends Component {
 
     return (
       <div>
-        <div style={{height: 900, width:400,  overflow: 'auto' }}>
-
-        <SearchBox 
-          onChangeInputSearch={this.handleChangeInputSearch} 
-          selectPrevMatch={this.selectPrevMatch} 
-          selectNextMatch={this.selectNextMatch}
-          searchFocusIndex={searchFocusIndex}
-          searchFoundCount={searchFoundCount}
-          searchString={searchString}
-        />
-
+        <div className="tree-list">
+          <SearchBox 
+            onChangeInputSearch={this.handleChangeInputSearch} 
+            selectPrevMatch={this.selectPrevMatch} 
+            selectNextMatch={this.selectNextMatch}
+            searchFocusIndex={searchFocusIndex}
+            searchFoundCount={searchFoundCount}
+            searchString={searchString}
+          />
           <SortableTree
             treeData={this.state.treeData}
             onChange={this.handleDataChange}

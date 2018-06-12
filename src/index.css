@@ -1,3 +1,17 @@
+.tree-list {
+  height: 900px;
+  width: 400px;
+  overflow: auto;
+}
+
+/*      TREE - Global      */
+.ReactVirtualized__Grid__innerScrollContainer {
+  color: #545556;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+}
+
+/*      TREE - add and remove buttons      */
 .hide .tree-button{
   padding-left: 5px;
   opacity: 0;
@@ -9,26 +23,73 @@
   opacity: 1;
 }
 
-.ReactVirtualized__Grid__innerScrollContainer {
-  color: #545556;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 14px;
+.tree-button:hover{
+  color: rgb(27, 25, 25);
 }
 
-.test {
-  width: 300px;
-  height: 700px;
-  overflow: auto;
-  background-color: rgb(241, 241, 241);
-}
+
+/*      TREE - search results      */
 
 .rstcustom__rowSearchMatch {
   box-shadow: none;
   color: #d4617e;
-
 }
 
 .rstcustom__rowSearchFocus {
   box-shadow: none;
   color: rgb(119, 161, 218);
+}
+
+/*      SEARCH BOX      */
+
+.search-box {
+  margin-bottom: 10px;
+  width: 300px;
+}
+
+.search-box-input {
+  float: left;
+  width: 55%;
+  margin-right: 5%;
+}
+
+.search-box-nav-buttons-prev {
+  display: inline-block;
+  width:10%;
+  margin-top: 1%;
+}
+
+.search-box-nav-buttons-next {
+  display: inline-block;
+  width:10%;
+  margin-top: 1%;
+}
+
+.fa-arrow-circle-left:hover  {
+  color: rgb(64, 133, 179);
+}
+.fa-arrow-circle-right:hover {
+  color: rgb(64, 133, 179);
+}
+
+.fa-arrow-circle-left, .fa-arrow-circle-right{
+  font-size: 1.2em;
+}
+
+.search-box-results-number {
+  float: right;
+  width: 20%;
+  margin-top: 1%;
+}
+
+#find-box {
+  width: 100%;
+  font-size: 0.8em;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.search-box-results-number {
+  font-size: 0.9em;
+  font-family: 'Open Sans', sans-serif;
+  color: #616263;
 }

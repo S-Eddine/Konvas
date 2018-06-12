@@ -11,32 +11,28 @@ export default class Search extends PureComponent {
         const {  searchString, searchFocusIndex, searchFoundCount } = this.props;
         console.log("bla 3")
         return (
-            <div>
-                <form  style={{ display: 'inline-block' }} onSubmit={event => { event.preventDefault(); }} >
-                    <input
-                        id="find-box"
-                        type="text"
-                        placeholder="Search..."
-                        style={{ fontSize: '1rem' }}
-                        value={searchString}
-                        onChange={this.props.onChangeInputSearch } />
-
-                    <button type="button" disabled={!searchFoundCount} onClick={this.props.selectPrevMatch} >
-                        &lt;
-                    </button>
-
-                    <button type="submit" disabled={!searchFoundCount} onClick={this.props.selectNextMatch}  >
-                        &gt;
-                    </button>
-
-                    <span>
+                <div  className="search-box" onSubmit={event => { event.preventDefault(); }} >
+                    <div className="search-box-input">
+                        <input
+                            id="find-box"
+                            type="text"
+                            placeholder="search..."
+                            value={searchString}
+                            onChange={this.props.onChangeInputSearch } />
+                    </div>
+                    <div className="search-box-nav-buttons-prev">
+                        <i disabled={!searchFoundCount} onClick={this.props.selectPrevMatch} class="fas fa-arrow-circle-left"></i>
+                    </div>
+                    <div className="search-box-nav-buttons-next">
+                        <i disabled={!searchFoundCount} onClick={this.props.selectNextMatch} class="fas fa-arrow-circle-right"></i>
+                    </div>
+                    <span className="search-box-results-number">
                         &nbsp;
                         {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
                         &nbsp;/&nbsp;
                         {searchFoundCount || 0}
                     </span>
-                </form>
-            </div>
+                </div>
         );
     }
 }
